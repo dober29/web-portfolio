@@ -2,8 +2,8 @@ import { useRef, useState } from 'react';
 import { CookiesProvider, useCookies } from 'react-cookie';
 
 import { defaultCellSize, cellStrokeWidth } from './Constants';
-import CircleCanvas from './CircleCanvas';
-import InputNumber from './InputNumber';
+import CircleCanvas from './CircleCanvas.jsx';
+import InputNumber from './InputNumber.jsx';
 import buildCircleBlocks from './buildCircleBlocks';
 
 import '../css/PixelCircle.css';
@@ -162,7 +162,7 @@ const PixelCircleInner = () => {
           </div>
           <div className='my-auto'></div>
           <div className='mx-auto fw-semibold'>
-            <span className='text-primary'>Made by </span><a href='https://dmytroterekhov.site/'>Dmytro Terekhov</a><span className='text-primary'>, 2026</span>
+            <span className='text-primary'>Made by </span><a href='https://dmytroterekhov.dev/'>Dmytro Terekhov</a><span className='text-primary'>, 2026</span>
           </div>
         </div>
       <CircleCanvas canvasRef={canvasRef} blocks={blocks} />

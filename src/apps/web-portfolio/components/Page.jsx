@@ -1,8 +1,8 @@
-import { useRootElementSizing } from '../../../customHooks';
+import { useRootElementSizing } from '@common/customHooks';
 
-import Card from './Card';
-import Footer from './Footer';
-import Header from './Header';
+import Card from './Card.jsx';
+import Footer from './Footer.jsx';
+import Header from './Header.jsx';
 
 const Page = props => {
   const cards = [];

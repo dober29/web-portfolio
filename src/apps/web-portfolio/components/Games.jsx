@@ -1,4 +1,4 @@
-import Page from './Page';
+import Page from './Page.jsx';
 
 import data from '../data/games.json';
 

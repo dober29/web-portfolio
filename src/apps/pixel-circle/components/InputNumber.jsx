@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import LongPressButton from './LongPressButton';
+import LongPressButton from './LongPressButton.jsx';
 
 import '../css/InputNumber.css';
 

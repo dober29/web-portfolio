@@ -1,4 +1,4 @@
-import { useRootElementSizing } from '../../../customHooks';
+import { useRootElementSizing } from '@common/customHooks';
 
 import '../css/WebPortfolio.css';
 
