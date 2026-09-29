@@ -10,12 +10,13 @@ import Container from './Container.jsx';
 import NotFound404 from './NotFound404.jsx';
 
 import WebPortfolio from './apps/web-portfolio/components/WebPortfolio.jsx';
-import Apps from './apps/web-portfolio/components/Apps.jsx';
-import Games from './apps/web-portfolio/components/Games.jsx';
-import { usePreload as useWebPortfolioPreload } from './apps/web-portfolio/components/preload';
+import Apps         from './apps/web-portfolio/components/Apps.jsx';
+import Games        from './apps/web-portfolio/components/Games.jsx';
 
 import PixelCircle from './apps/pixel-circle/components/PixelCircle.jsx';
-import { usePreload as usePixelCirclePreload } from './apps/pixel-circle/components/preload';
+
+import { usePreload as useWebPortfolioPreload } from './apps/web-portfolio/components/preload';
+import { usePreload as usePixelCirclePreload }  from './apps/pixel-circle/components/preload';
 
 const router = createHashRouter([
   {
@@ -24,31 +25,25 @@ const router = createHashRouter([
     children: [
       {
         path: '/',
-        element: <Container usePreload={useWebPortfolioPreload} component={<WebPortfolio />} />
+        element: <Container preload={useWebPortfolioPreload}><WebPortfolio /></Container>
       },
       {
         path: '/apps',
-        element: <Container usePreload={useWebPortfolioPreload} component={<Apps />} />
+        element: <Container preload={useWebPortfolioPreload}><Apps /></Container>
       },
       {
         path: '/games',
-        element: <Container usePreload={useWebPortfolioPreload} component={<Games />} />
+        element: <Container preload={useWebPortfolioPreload}><Games /></Container>
       },
       {
         path: '/apps/pixel-circle',
-        element: <Container usePreload={usePixelCirclePreload} component={<PixelCircle />} />
+        element: <Container preload={usePixelCirclePreload}><PixelCircle /></Container>
       }
     ]
   }
 ]);
 
-console.log(document.getElementById('root'));
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-
-root.render(
-  <RouterProvider router={router} />
-);
+ReactDOM.createRoot(document.getElementById('root')).render(<RouterProvider router={router} />);
 
 (function(url) {
   if (window.location.hash === '#/apps/pixel-circle') {

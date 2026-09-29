@@ -1,6 +1,6 @@
 const Container = props => {
-  props.usePreload();
-  return props.component;
+  props.preload();
+  return props.children;
 };
 
 export default Container;

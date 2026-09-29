@@ -1,7 +1,6 @@
 import { useRootElementSizing } from '@common/customHooks';
 
 import Card from './Card.jsx';
-import Footer from './Footer.jsx';
 import Header from './Header.jsx';
 
 const Page = props => {
@@ -27,7 +26,6 @@ const Page = props => {
       <div className='d-flex flex-grow-1 mb-4' style={{paddingTop: '3.6rem'}}>
         {content}
       </div>
-      <Footer />
     </div>
   );
 }

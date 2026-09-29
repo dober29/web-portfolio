@@ -1,9 +1,10 @@
-import { useRootElementSizing } from '@common/customHooks';
+import { useRootElementSizing, useRootElementFont } from '@common/customHooks';
 
 import '../css/WebPortfolio.css';
 
 const WebPortfolio = () => {
   useRootElementSizing('10px', 'sm', '12px', 'md', '14px', 'lg', '16px', 'xl', '20px', 'xxl', '24px');
+  useRootElementFont("'Outfit', sans-serif");
 
   return (
     <div className="WebPortfolio vw-100 vh-100 d-flex">
