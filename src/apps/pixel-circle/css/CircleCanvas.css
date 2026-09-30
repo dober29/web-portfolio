@@ -1,0 +1,7 @@
+.CircleCanvas-Container  {
+  cursor: grab;
+}
+
+.CircleCanvas-Container:active {
+  cursor: grabbing;
+}

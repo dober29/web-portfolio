@@ -1,0 +1,34 @@
+.CustomNumberInput-Input::-webkit-inner-spin-button,
+.CustomNumberInput-Input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.CustomNumberInput-Input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.CustomNumberInput-Input::-ms-clear {
+  display: none;
+}
+
+.CustomNumberInput > .CustomNumberInput-Buttons {
+  padding: .5rem 0;
+  opacity: 0;
+}
+
+.CustomNumberInput:hover > .CustomNumberInput-Buttons {
+  opacity: 1;
+}
+
+.CustomNumberInput > .CustomNumberInput-Buttons > .LongPressButton {
+  line-height: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+}
+
+.CustomNumberInput > .CustomNumberInput-Buttons > .LongPressButton.active {
+  transform: translate(0, 2px);
+}

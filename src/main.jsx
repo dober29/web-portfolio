@@ -16,7 +16,6 @@ import Games        from './apps/web-portfolio/components/Games.jsx';
 import PixelCircle from './apps/pixel-circle/components/PixelCircle.jsx';
 
 import { usePreload as useWebPortfolioPreload } from './apps/web-portfolio/components/preload';
-import { usePreload as usePixelCirclePreload }  from './apps/pixel-circle/components/preload';
 
 const router = createHashRouter([
   {
@@ -37,7 +36,7 @@ const router = createHashRouter([
       },
       {
         path: '/apps/pixel-circle',
-        element: <Container preload={usePixelCirclePreload}><PixelCircle /></Container>
+        element: <PixelCircle />
       }
     ]
   }

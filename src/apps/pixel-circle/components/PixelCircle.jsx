@@ -3,10 +3,12 @@ import { CookiesProvider, useCookies } from 'react-cookie';
 
 import { defaultCellSize, cellStrokeWidth } from './Constants';
 import CircleCanvas from './CircleCanvas.jsx';
-import InputNumber from './InputNumber.jsx';
-import buildCircleBlocks from './buildCircleBlocks';
+import CustomNumberInput from './CustomNumberInput.jsx';
+import buildCircleSegments from './CircleBuilder';
 
 import '../css/PixelCircle.css';
+import { usePreload } from './preload';
+import { useRootElementFont, useRootElementSizing } from '@common/customHooks';
 
 const PixelCircleInner = () => {
   const onBind = value => {
@@ -22,7 +24,7 @@ const PixelCircleInner = () => {
   const [bind, setBind]             = useState(cookies['bind'] || false);
 
   const canvasRef = useRef(null);
-  const blocks    = buildCircleBlocks(size.width, size.height, fill, thickWalls);
+  const segments    = buildCircleSegments(size.width, size.height, fill, thickWalls);
 
   const onSaveAsPNGButtonClicked = () => {
     const canvas  = canvasRef.current;
@@ -39,8 +41,8 @@ const PixelCircleInner = () => {
     const svgNode = document.createElement('svg');
 
     svgNode.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    svgNode.setAttribute('width',  blocks[0].length * defaultCellSize);
-    svgNode.setAttribute('height', blocks.length * defaultCellSize);
+    svgNode.setAttribute('width',  segments[0].fullLength * defaultCellSize);
+    svgNode.setAttribute('height', segments.length * defaultCellSize);
 
     const svgDefs = document.createElement('defs');
 
@@ -64,17 +66,19 @@ const PixelCircleInner = () => {
     svgDefs.appendChild(visibleBlockRect);
     svgDefs.appendChild(hiddenBlockRect);
 
-    for (let i = 0; i < blocks.length; i++) {
-      for (let j = 0; j < blocks[i].length; j++) {
-        if (blocks[i][j] === undefined) {
+    for (let i = 0; i < segments.height; i++) {
+      for (let j = 0; j < segments.width; j++) {
+        if (j < segments[i].start || j >= segments[i].end) {
           continue;
         }
 
+        const hidden = j < segments[i].gapStart || j >= segments[i].gapEnd;
+
         const r = document.createElement('use');
 
-        r.setAttribute('href', blocks[i][j] ? '#visible' : '#hidden');
-        r.setAttribute('x',    j * defaultCellSize);
-        r.setAttribute('y',    i * defaultCellSize);
+        r.setAttribute('x', j * defaultCellSize);
+        r.setAttribute('y', i * defaultCellSize);
+        r.setAttribute('href', hidden ? '#visible' : '#hidden');
 
         svgNode.appendChild(r);
       }
@@ -86,6 +90,10 @@ const PixelCircleInner = () => {
     link.click();
   };
 
+  usePreload();
+  useRootElementSizing('8px', 'sm', '9px', 'md', '10px', 'lg', '11px', 'xl', '12px');
+  useRootElementFont('"Geist Pixel", sans-serif');
+
   return (
     <div className='PixelCircle d-flex vw-100 vh-100'>
       <div className='side d-flex flex-column px-3 py-4'>
@@ -96,7 +104,7 @@ const PixelCircleInner = () => {
             <label htmlFor='widthInput' className='fs-6 text-primary'>
               Width
             </label>
-            <InputNumber id='widthInput' className={size.height < 1 ? 'border-danger': ''} name='widthInput' min={1} value={size.width} onChange={v => {
+            <CustomNumberInput id='widthInput' className={size.height < 1 ? 'border-danger': ''} name='widthInput' min={1} value={size.width} onChange={v => {
               const newSize = {
                 width: v * 1,
                 height: bind ? v * 1 : size.height
@@ -108,15 +116,16 @@ const PixelCircleInner = () => {
               setCookie('height', newSize.height, {path: '/', maxAge: 604800});
             }} />
           </div>
-          <div className='mx-1 mt-4'>
-            <button onClick={() => onBind(true)} className={`btn btn-sm p-0 fs-4${bind ? ' collapse' : ''}`} style={{filter: 'grayscale(100%) contrast(30%)'}}>🔓</button>
-            <button onClick={() => onBind(false)} className={`btn btn-sm p-0 fs-4${bind ? '': ' collapse'}`} style={{filter: 'grayscale(100%) contrast(30%)'}}>🔒</button>
+          <div className='mx-1 mt-4 align-self-center'>
+            <button onClick={() => onBind(!bind)} className='btn btn-sm p-0 fs-4' style={{width: 24}}>
+              <i className={`fa ${bind ? 'fa-lock' : 'fa-unlock'}`} aria-hidden='true'></i>
+            </button>
           </div>
           <div className='col-3'>
             <label htmlFor='heightInput' className='fs-6 text-primary'>
               Height
             </label>
-            <InputNumber id='heightInput' className={size.height < 1 ? 'border-danger': ''} name='heightInput' min={1} value={size.height} onChange={v => {
+            <CustomNumberInput id='heightInput' className={size.height < 1 ? 'border-danger': ''} name='heightInput' min={1} value={size.height} onChange={v => {
               const newSize = {
                 width: bind ? v : size.width,
                 height: v * 1
@@ -151,7 +160,7 @@ const PixelCircleInner = () => {
           </div>
         </div>
         <hr className='col-4 mx-auto my-3' />
-        <div className='d-flex flex-row mx-auto'>
+        <div className='d-flex flex-row mx-auto my-3'>
           <button className='btn btn-outline-secondary fs-4 fw-semibold' onClick={onSaveAsPNGButtonClicked}>
             Save as png
             </button>
@@ -160,12 +169,13 @@ const PixelCircleInner = () => {
               Save as svg
             </button>
           </div>
+          <hr className='col-4 mx-auto my-3' />
           <div className='my-auto'></div>
           <div className='mx-auto fw-semibold'>
-            <span className='text-primary'>Made by </span><a href='https://dmytroterekhov.dev/'>Dmytro Terekhov</a><span className='text-primary'>, 2026</span>
+            <span className='text-primary'>Made by </span><a href='/'>Dmytro Terekhov</a><span className='text-primary'>, 2026</span>
           </div>
         </div>
-      <CircleCanvas canvasRef={canvasRef} blocks={blocks} />
+      <CircleCanvas canvasRef={canvasRef} segments={segments} />
     </div>
   );
 }

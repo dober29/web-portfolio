@@ -75,6 +75,8 @@ const useRootElementFont = (fontFamily, fontWeight = 400, fontStyle = 'normal') 
     const rootStyleChild = document.createElement('style');
     rootStyleChild.innerHTML = `
       :root{
+        --bs-body-font-family: ${fontFamily};
+        --bs-body-font-weight: ${fontWeight};
         font-family: ${fontFamily};
         font-weight: ${fontWeight};
         font-style: ${fontStyle}

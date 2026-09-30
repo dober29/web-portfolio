@@ -1,0 +1,7 @@
+.StackedComponent {
+  display: grid;
+}
+
+.StackedComponent > * {
+  grid-area: 1 / 1;
+}

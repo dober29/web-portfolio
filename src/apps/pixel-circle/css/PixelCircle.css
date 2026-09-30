@@ -6,6 +6,7 @@
   --bs-heading-color: var(--bs-primary);
   --bs-body-bg: #649EFF;
   --bs-body-bg-rgb: 100, 158, 255;
+  text-shadow: -1px 1px black;
 }
 
 .PixelCircle, [data-bs-theme=light] {

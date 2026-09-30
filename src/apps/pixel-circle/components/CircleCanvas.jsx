@@ -1,7 +1,11 @@
 import { useRef, useState, useEffect } from 'react';
-import { minCellSize, defaultCellSize, maxCellSize, cellStrokeWidth } from './Constants';
 
+import '../css/CircleCanvas.css';
+
+import { minCellSize, defaultCellSize, maxCellSize, cellStrokeWidth } from './Constants';
 import bg from '../img/bg.png';
+import CircleStats from './CircleStats.jsx';
+import StackedComponent from '@common/StackedComponent';
 
 const minScale = minCellSize / defaultCellSize;
 const maxScale = maxCellSize / defaultCellSize;
@@ -10,8 +14,8 @@ const CircleCanvas = props => {
   const [centerLocation, setCenterLocation] = useState({x: 0, y: 0});
   const mainViewRef = useRef(null);
 
-  const width  = props.blocks[0].length || 0;
-  const height = props.blocks.length    || 0;
+  const width  = props.segments.width  || 0;
+  const height = props.segments.height || 0;
 
   const circleWidth  = width * defaultCellSize;
   const circleHeight = height * defaultCellSize;
@@ -99,27 +103,29 @@ const CircleCanvas = props => {
       window.removeEventListener('mousemove', onMouseMoveEvent);
       window.removeEventListener('mouseup', onMouseUpEvent);
     };
-  }, [centerLocation, circleWidth, circleHeight]);
+  }, [centerLocation, width, height]);
 
   useEffect(() => {
     const canvas = props.canvasRef.current;
     const ctx = canvas.getContext('2d');
 
-    if (circleWidth <= 0 || circleHeight <= 0) {
+    if (width <= 0 || height <= 0) {
       return;
     }
 
     ctx.clearRect(0, 0, circleWidth, circleHeight);
 
-    for (let i = 0; i < props.blocks.length; i++) {
-      for (let j = 0; j < props.blocks[i].length; j++) {
-        const cell = props.blocks[i][j];
+    for (let i = 0; i < props.segments.height; i++) {
+      for (let j = 0; j < props.segments.width; j++) {
+        const seg = props.segments[i];
 
-        if (cell === undefined) {
+        if (j < seg.start || j >= seg.end) {
           continue;
         }
 
-        ctx.fillStyle   = cell ? '#0D47A1FF' : '#0D47A133';
+        const hidden = j < seg.gapStart || j >= seg.gapEnd;
+
+        ctx.fillStyle   = hidden ? '#0D47A1FF' : '#0D47A133';
         ctx.strokeStyle = '#1A237E';
         ctx.lineWidth   = cellStrokeWidth;
 
@@ -128,18 +134,25 @@ const CircleCanvas = props => {
 
         ctx.fillRect(x1, y1, defaultCellSize, defaultCellSize);
 
-        if (cell) {
+        if (hidden) {
           ctx.strokeRect(x1, y1, defaultCellSize, defaultCellSize);
         }
       }
     }
-  }, [circleWidth, circleHeight, props.blocks, props.canvasRef]);
+  }, [width, height, props.blocks, props.canvasRef]);
 
   return (
-    <div className='w-100 h-100 overflow-hidden' style={{backgroundImage: `url(${bg})`, backgroundSize: `${defaultCellSize * 2}px ${defaultCellSize * 2}px`}}>
-      <div ref={mainViewRef} className='position-relative' style={{width: circleWidth, height: circleHeight, top: centerLocation.y - circleHeight / 2, left: centerLocation.x - circleWidth / 2, transformOrigin: `50% 50%`}}>
-        <canvas ref={props.canvasRef} width={circleWidth + cellStrokeWidth} height={circleHeight + cellStrokeWidth}></canvas>
-      </div>
+    <div className='CircleCanvas w-100 h-100 overflow-hidden' style={{backgroundImage: `url(${bg})`, backgroundSize: `${defaultCellSize * 2}px ${defaultCellSize * 2}px`}}>
+      <StackedComponent className='w-100 h-100'>
+        <div className='CircleCanvas-Container w-100 h-100 overflow-hidden'>
+          <div ref={mainViewRef} className='position-relative' style={{width: circleWidth + cellStrokeWidth, height: circleHeight + cellStrokeWidth, top: centerLocation.y - circleHeight / 2, left: centerLocation.x - circleWidth / 2, transformOrigin: `50% 50%`}}>
+            <canvas ref={props.canvasRef} width={circleWidth + cellStrokeWidth} height={circleHeight + cellStrokeWidth}></canvas>
+          </div>
+        </div>
+        <div className='p-2 ms-auto mb-auto' style={{zIndex: 1}}>
+          <CircleStats segments={props.segments} />
+        </div>
+      </StackedComponent>
     </div>
   );
 };
